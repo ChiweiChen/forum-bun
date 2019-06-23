@@ -1,0 +1,88 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @article.title %>
+
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @article.description %>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @article.discussions.each do |discussion| %>
+      <tr>
+        <td><%= discussion.title %></td>
+        <td><%= discussion.content %></td>
+        <td><%= link_to 'Edit', edit_discussion_path(discussion) %></td>
+        <td><%= link_to 'Destroy', discussion, methdo: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= form_with(model: @discussion, local: true) do |form| %>
+  <% if @discussion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@discussion.errors.count, "error") %> prohibited this discussion from being saved:</h2>
+
+      <ul>
+      <% @discussion.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :content %>
+    <%= form.text_field :content %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :article_id ,:value => @article.id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+
+
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
+
+
+<script>
+
+$("#submit").click(function(){
+  var id = $("#id").val()
+  var title=$("#title").val()
+  var content=$("#content").text()
+  $.ajax({
+    type:"POST",
+    url:"/article/" + id + "/create_discussion",
+    data:{'title':title, 'content':content} 
+  })
+})
+
+
+
+</script>
